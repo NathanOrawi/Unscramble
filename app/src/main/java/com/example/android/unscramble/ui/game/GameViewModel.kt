@@ -11,8 +11,8 @@ class GameViewModel : ViewModel() {
         get() = _score
 
     private val _currentWordTryCount = MutableLiveData(0)
-    val currentWordTryCount: LiveData<Int>
-        get() = _currentWordTryCount
+//    val currentWordTryCount: LiveData<Int>
+//        get() = _currentWordTryCount
 
     private val _incorrectWordCount = MutableLiveData(0)
     val incorrectWordCount: LiveData<Int>
