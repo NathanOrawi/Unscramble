@@ -50,33 +50,33 @@ class GameViewModel: ViewModel() {
     /*
      * Updates currentWord and _currentScrambledWord with the new scrambled word.
      */
-    fun rescrambleWord() {
-        val newScrambledWord = currentScrambledWord.toCharArray()
-        newScrambledWord.shuffle()
-        while (newScrambledWord.toString().equals(currentWord, false)) {
-            newScrambledWord.shuffle()
-        }
-        _currentScrambledWord = String(newScrambledWord)
-    }
+//    fun rescrambleWord() {
+//        val newScrambledWord = _currentScrambledWord.toCharArray()
+//        newScrambledWord.shuffle()
+//        while (newScrambledWord.toString().equals(currentWord, false)) {
+//            newScrambledWord.shuffle()
+//        }
+//        _currentScrambledWord = String(newScrambledWord)
+//    }
 
     /*
      * Progressively updates each letter of _currentScrambled word to the corresponding letter in the currentWord.
      * From first to last letter, whilst keeping the latter letters.
      * For hinting purposes.
      */
-    fun hintWord() {
-        val scrambledWord = currentScrambledWord.toCharArray()
-        for (i in currentWord.indices) {
-            // what does currentWord.indices look like? -> 0, 1, 2, 3, 4, 5
-            if (scrambledWord[i] != currentWord[i]) {
-                // what does currentWord[i] look like? -> "a", "n", "i", "m", "a", "l"
-                scrambledWord[i] = currentWord[i]
-                //nonHintScrambledCharacters = scrambleWord.substring(i + 1)
-                break
-            }
-        }
-        _currentScrambledWord = String(scrambledWord)
-    }
+//    fun hintWord() {
+//        val scrambledWord = currentScrambledWord.toCharArray()
+//        for (i in currentWord.indices) {
+//            // what does currentWord.indices look like? -> 0, 1, 2, 3, 4, 5
+//            if (scrambledWord[i] != currentWord[i]) {
+//                // what does currentWord[i] look like? -> "a", "n", "i", "m", "a", "l"
+//                scrambledWord[i] = currentWord[i]
+//                //nonHintScrambledCharacters = scrambleWord.substring(i + 1)
+//                break
+//            }
+//        }
+//        _currentScrambledWord = String(scrambledWord)
+//    }
 
     /*
      * Returns true if the current word count is less than MAX_NO_OF_WORDS.

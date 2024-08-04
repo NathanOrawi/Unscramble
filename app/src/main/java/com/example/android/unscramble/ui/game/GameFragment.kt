@@ -59,15 +59,19 @@ class GameFragment : Fragment() {
         // Setup a click listener for the Submit, Skip, Shuffle and Hint buttons.
         binding.submit.setOnClickListener { onSubmitWord() }
         binding.skip.setOnClickListener { onSkipWord() }
-        binding.shuffle.setOnClickListener { onShuffleWord() }
-        binding.hint.setOnClickListener { onHintWord() }
+//        binding.shuffle.setOnClickListener { onShuffleWord() }
+//        binding.hint.setOnClickListener { onHintWord() }
         // Update the UI
-        updateNextWordOnScreen()
         binding.score.text = getString(R.string.score, 0)
         binding.incorrectWordCount.text = getString(
                 R.string.incorrect_word_count, 0, MAX_NO_OF_INCORRECT_WORDS)
         binding.wordCount.text = getString(
                 R.string.word_count, 0, MAX_NO_OF_WORDS)
+        // Observe the currentScrambledWord LiveData
+        viewModel.currentScrambledWord.observe(viewLifecycleOwner)
+        { newWord ->
+            binding.textViewScrambledWord.text = newWord
+        }
     }
     /*
     * Checks the user's word, and updates the score accordingly.
@@ -77,9 +81,7 @@ class GameFragment : Fragment() {
         val playerWord = binding.textInputEditText.text.toString()
         if (viewModel.isUserWordCorrect(playerWord)) {
             setErrorTextField(false)
-            if (viewModel.nextWord()) {
-                updateNextWordOnScreen()
-            } else {
+            if (!viewModel.nextWord()) {
                 showFinalScoreDialog()
             }
         } else {
@@ -97,7 +99,6 @@ class GameFragment : Fragment() {
     private fun onSkipWord() {
         if (viewModel.nextWord()) {
             setErrorTextField(false)
-            updateNextWordOnScreen()
         } else {
             showFinalScoreDialog()
         }
@@ -106,21 +107,19 @@ class GameFragment : Fragment() {
     /*
      * Shuffles the scrambled word.
      */
-    private fun onShuffleWord() {
-        setErrorTextField(false)
-        viewModel.rescrambleWord()
-        updateNextWordOnScreen()
-    }
+//    private fun onShuffleWord() {
+//        setErrorTextField(false)
+//        viewModel.rescrambleWord()
+//    }
 
     /*
      * Provides a hint to the user by showing the letter of the current word
      * one Hint click at a time. From first to last letter.
      */
-    private fun onHintWord() {
-        setErrorTextField(false)
-        viewModel.hintWord()
-        updateNextWordOnScreen()
-    }
+//    private fun onHintWord() {
+//        setErrorTextField(false)
+//        viewModel.hintWord()
+//    }
     /*
      * Re-initializes the data in the ViewModel and updates the views with the new data, to
      * restart the game.
@@ -128,7 +127,6 @@ class GameFragment : Fragment() {
     private fun restartGame() {
         viewModel.reinitializeData()
         setErrorTextField(false)
-        updateNextWordOnScreen()
     }
 
     /*
@@ -154,13 +152,6 @@ class GameFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         Log.d("GameFragment", "GameFragment destroyed!")
-    }
-
-    /*
-     * Displays the next scrambled word on screen.
-     */
-    private fun updateNextWordOnScreen() {
-        binding.textViewScrambledWord.text = viewModel.currentScrambledWord
     }
 
     /*
