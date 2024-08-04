@@ -69,21 +69,6 @@ class GameFragment : Fragment() {
 //        binding.hint.setOnClickListener { onHintWord() }
         // Update the UI
         //binding.incorrectWordCount.text = getString( R.string.incorrect_word_count, 0, MAX_NO_OF_INCORRECT_WORDS)
-        // Observe the currentScrambledWord LiveData
-        viewModel.currentScrambledWord.observe(viewLifecycleOwner)
-        { newWord ->
-            binding.textViewScrambledWord.text = newWord
-        }
-        // Observe the score LiveData
-        viewModel.score.observe(viewLifecycleOwner)
-        { newScore ->
-            binding.score.text = getString(R.string.score, newScore)
-        }
-        // Observe the currentWordCount LiveData
-        viewModel.currentWordCount.observe(viewLifecycleOwner)
-        { newWordCount ->
-            binding.wordCount.text = getString(R.string.word_count, newWordCount, MAX_NO_OF_WORDS)
-        }
     }
     /*
     * Checks the user's word, and updates the score accordingly.
@@ -159,11 +144,6 @@ class GameFragment : Fragment() {
             binding.textField.isErrorEnabled = false
             binding.textInputEditText.text = null
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("GameFragment", "GameFragment destroyed!")
     }
 
     /*
