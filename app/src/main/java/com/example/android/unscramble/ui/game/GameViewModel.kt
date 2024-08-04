@@ -131,7 +131,7 @@ class GameViewModel : ViewModel() {
             increaseScore()
             return true
         } else decreaseScore()
-        _incorrectWordCount.value = _incorrectWordCount.value?.dec()
+        _incorrectWordCount.value = _incorrectWordCount.value?.inc()
         return false
     }
 
