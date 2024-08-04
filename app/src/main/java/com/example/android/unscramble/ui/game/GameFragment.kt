@@ -17,7 +17,6 @@
 package com.example.android.unscramble.ui.game
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,15 +41,11 @@ class GameFragment : Fragment() {
     // first fragment
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         // Inflate the layout XML file and return a binding object instance
         binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment, container, false)
-        Log.d("GameFragment", "GameFragment created/re-created!")
-        Log.d("GameFragment", "Word: ${viewModel.currentScrambledWord} " +
-                "Score: ${viewModel.score} WordCount: ${viewModel.currentWordCount} " +
-                "IncorrectWords: ${viewModel.incorrectWordCount} CurrentWordTryCount: ${viewModel.currentWordTryCount}")
         return binding.root
     }
 
@@ -58,6 +53,7 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.gameViewModel = viewModel
         binding.maxNoOfWords = MAX_NO_OF_WORDS
+        binding.maxNoOfIncorrectWords = MAX_NO_OF_INCORRECT_WORDS
         // Specify the fragment view as the lifecycle owner of the binding.
         // This is used so that the binding can observe LiveData updates
         binding.lifecycleOwner = viewLifecycleOwner
@@ -65,11 +61,10 @@ class GameFragment : Fragment() {
         // Setup a click listener for the Submit, Skip, Shuffle and Hint buttons.
         binding.submit.setOnClickListener { onSubmitWord() }
         binding.skip.setOnClickListener { onSkipWord() }
-//        binding.shuffle.setOnClickListener { onShuffleWord() }
-//        binding.hint.setOnClickListener { onHintWord() }
-        // Update the UI
-        //binding.incorrectWordCount.text = getString( R.string.incorrect_word_count, 0, MAX_NO_OF_INCORRECT_WORDS)
+        binding.shuffle.setOnClickListener { onShuffleWord() }
+        binding.hint.setOnClickListener { onHintWord() }
     }
+
     /*
     * Checks the user's word, and updates the score accordingly.
     * Displays the next scrambled word.
@@ -104,19 +99,20 @@ class GameFragment : Fragment() {
     /*
      * Shuffles the scrambled word.
      */
-//    private fun onShuffleWord() {
-//        setErrorTextField(false)
-//        viewModel.rescrambleWord()
-//    }
+    private fun onShuffleWord() {
+        setErrorTextField(false)
+        viewModel.reScrambleWord()
+    }
 
     /*
      * Provides a hint to the user by showing the letter of the current word
      * one Hint click at a time. From first to last letter.
      */
-//    private fun onHintWord() {
-//        setErrorTextField(false)
-//        viewModel.hintWord()
-//    }
+    private fun onHintWord() {
+        setErrorTextField(false)
+        viewModel.hintWord()
+    }
+
     /*
      * Re-initializes the data in the ViewModel and updates the views with the new data, to
      * restart the game.
@@ -151,15 +147,15 @@ class GameFragment : Fragment() {
      */
     private fun showFinalScoreDialog() {
         MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.congratulations))
-                .setMessage(getString(R.string.you_scored, viewModel.score.value))
-                .setCancelable(false)
-                .setNegativeButton(getString(R.string.exit)) { _, _ ->
-                    exitGame()
-                }
-                .setPositiveButton(getString(R.string.play_again)) { _, _ ->
-                    restartGame()
-                }
-                .show()
+            .setTitle(getString(R.string.congratulations))
+            .setMessage(getString(R.string.you_scored, viewModel.score.value))
+            .setCancelable(false)
+            .setNegativeButton(getString(R.string.exit)) { _, _ ->
+                exitGame()
+            }
+            .setPositiveButton(getString(R.string.play_again)) { _, _ ->
+                restartGame()
+            }
+            .show()
     }
 }

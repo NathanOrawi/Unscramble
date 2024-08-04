@@ -26,7 +26,8 @@ const val FIRST_TRY = 0
 
 // List with all the words for the Game
 val allWordsList: List<String> =
-    listOf("animal",
+    listOf(
+        "animal",
         "auto",
         "anecdote",
         "alphabet",
@@ -204,4 +205,5 @@ val allWordsList: List<String> =
         "zigzag",
         "zoology",
         "zone",
-        "zeal")
+        "zeal"
+    )

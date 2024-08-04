@@ -5,18 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class GameViewModel: ViewModel() {
-    // Moved the following variables from the GameFragment.kt file
+class GameViewModel : ViewModel() {
     private val _score = MutableLiveData(0)
     val score: LiveData<Int>
         get() = _score
 
-    private var _currentWordTryCount = 0
-    val currentWordTryCount: Int
+    private val _currentWordTryCount = MutableLiveData(0)
+    val currentWordTryCount: LiveData<Int>
         get() = _currentWordTryCount
 
-    private var _incorrectWordCount = 0
-    val incorrectWordCount: Int
+    private val _incorrectWordCount = MutableLiveData(0)
+    val incorrectWordCount: LiveData<Int>
         get() = _incorrectWordCount
 
     private val _currentWordCount = MutableLiveData(0)
@@ -29,6 +28,7 @@ class GameViewModel: ViewModel() {
     // List of words used in the game
     private var wordsList: MutableList<String> = mutableListOf()
     private lateinit var currentWord: String
+
     /*
      * Updates currentWord and _currentScrambledWord with the next word.
      */
@@ -44,41 +44,41 @@ class GameViewModel: ViewModel() {
         } else {
             _currentScrambledWord.value = String(tempWord)
             _currentWordCount.value = (_currentWordCount.value)?.inc()
-            _currentWordTryCount = 0
+            _currentWordTryCount.value = 0
             wordsList.add(currentWord)
         }
     }
 
     /*
      * Updates currentWord and _currentScrambledWord with the new scrambled word.
+     * Re-scrambles the current word.
      */
-//    fun rescrambleWord() {
-//        val newScrambledWord = _currentScrambledWord.toCharArray()
-//        newScrambledWord.shuffle()
-//        while (newScrambledWord.toString().equals(currentWord, false)) {
-//            newScrambledWord.shuffle()
-//        }
-//        _currentScrambledWord = String(newScrambledWord)
-//    }
+    fun reScrambleWord() {
+        _currentScrambledWord.value?.toCharArray()?.let { newScrambledWord ->
+            newScrambledWord.shuffle()
+            while (newScrambledWord.toString().equals(currentWord, false)) {
+                newScrambledWord.shuffle()
+            }
+            _currentScrambledWord.value = String(newScrambledWord)
+        }
+    }
 
     /*
      * Progressively updates each letter of _currentScrambled word to the corresponding letter in the currentWord.
      * From first to last letter, whilst keeping the latter letters.
      * For hinting purposes.
      */
-//    fun hintWord() {
-//        val scrambledWord = currentScrambledWord.toCharArray()
-//        for (i in currentWord.indices) {
-//            // what does currentWord.indices look like? -> 0, 1, 2, 3, 4, 5
-//            if (scrambledWord[i] != currentWord[i]) {
-//                // what does currentWord[i] look like? -> "a", "n", "i", "m", "a", "l"
-//                scrambledWord[i] = currentWord[i]
-//                //nonHintScrambledCharacters = scrambleWord.substring(i + 1)
-//                break
-//            }
-//        }
-//        _currentScrambledWord = String(scrambledWord)
-//    }
+    fun hintWord() {
+        currentScrambledWord.value?.toCharArray()?.let { hintWord ->
+            for (i in hintWord.indices) {
+                if (hintWord[i] != currentWord[i]) {
+                    hintWord[i] = currentWord[i]
+                    break
+                }
+            }
+            _currentScrambledWord.value = String(hintWord)
+        }
+    }
 
     /*
      * Returns true if the current word count is less than MAX_NO_OF_WORDS.
@@ -96,8 +96,8 @@ class GameViewModel: ViewModel() {
      * Returns true if the incorrectWordCount is less than MAX_NO_OF_INCORRECT_WORDS.
      */
     fun nextTry(): Boolean {
-        ++_currentWordTryCount
-        return _incorrectWordCount < MAX_NO_OF_INCORRECT_WORDS
+        _currentWordTryCount.value = _currentWordTryCount.value?.inc()
+        return _incorrectWordCount.value!! < MAX_NO_OF_INCORRECT_WORDS
     }
 
     /*
@@ -105,7 +105,7 @@ class GameViewModel: ViewModel() {
      */
     private fun increaseScore() {
         // if score = 20
-        if (_currentWordTryCount == FIRST_TRY) {
+        if (_currentWordTryCount.value!! == FIRST_TRY) {
             _score.value = _score.value?.plus(BONUS)
         }
         _score.value = _score.value?.plus(SCORE_INCREASE)
@@ -130,9 +130,8 @@ class GameViewModel: ViewModel() {
         if (playerWord.equals(currentWord, true)) {
             increaseScore()
             return true
-        } else
-            decreaseScore()
-            ++_incorrectWordCount
+        } else decreaseScore()
+        _incorrectWordCount.value = _incorrectWordCount.value?.dec()
         return false
     }
 
@@ -142,8 +141,8 @@ class GameViewModel: ViewModel() {
     fun reinitializeData() {
         _currentWordCount.value = 0
         _score.value = 0
-        _incorrectWordCount = 0
-        _currentWordTryCount = 0
+        _incorrectWordCount.value = 0
+        _currentWordTryCount.value = 0
         wordsList.clear()
         getNextWord()
     }

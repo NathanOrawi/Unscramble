@@ -19,11 +19,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="gameViewModel"
             type="com.example.android.unscramble.ui.game.GameViewModel" />
+
         <variable
             name="maxNoOfWords"
+            type="int" />
+
+        <variable
+            name="maxNoOfIncorrectWords"
             type="int" />
     </data>
 
@@ -77,8 +83,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="@dimen/default_margin"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
                 android:text="@{gameViewModel.currentScrambledWord}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
                 app:layout_constraintBottom_toTopOf="@+id/textView_instructions"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,7 +159,7 @@
                 android:id="@+id/incorrect_word_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/incorrect_word_count"
+                android:text="@{@string/incorrect_word_count(gameViewModel.incorrectWordCount, maxNoOfIncorrectWords)}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/textView_scrambled_word"
