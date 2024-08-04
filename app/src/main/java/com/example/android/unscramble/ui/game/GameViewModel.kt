@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 
 class GameViewModel: ViewModel() {
     // Moved the following variables from the GameFragment.kt file
-    var score = 0
+    private val _score = MutableLiveData(0)
+    val score: LiveData<Int>
+        get() = _score
 
     private var _currentWordTryCount = 0
     val currentWordTryCount: Int
@@ -17,8 +19,8 @@ class GameViewModel: ViewModel() {
     val incorrectWordCount: Int
         get() = _incorrectWordCount
 
-    private var _currentWordCount = 0
-    val currentWordCount: Int
+    private val _currentWordCount = MutableLiveData(0)
+    val currentWordCount: LiveData<Int>
         get() = _currentWordCount
     private val _currentScrambledWord = MutableLiveData<String>()
     val currentScrambledWord: LiveData<String>
@@ -41,7 +43,7 @@ class GameViewModel: ViewModel() {
             getNextWord()
         } else {
             _currentScrambledWord.value = String(tempWord)
-            ++_currentWordCount
+            _currentWordCount.value = (_currentWordCount.value)?.inc()
             _currentWordTryCount = 0
             wordsList.add(currentWord)
         }
@@ -84,7 +86,7 @@ class GameViewModel: ViewModel() {
      * Helper Methode
      */
     fun nextWord(): Boolean {
-        return if (_currentWordCount < MAX_NO_OF_WORDS) {
+        return if (_currentWordCount.value!! < MAX_NO_OF_WORDS) {
             getNextWord()
             true
         } else false
@@ -104,9 +106,9 @@ class GameViewModel: ViewModel() {
     private fun increaseScore() {
         // if score = 20
         if (_currentWordTryCount == FIRST_TRY) {
-            score += BONUS
+            _score.value = _score.value?.plus(BONUS)
         }
-        score += SCORE_INCREASE
+        _score.value = _score.value?.plus(SCORE_INCREASE)
         // score = 20 + 2 + 20 = 42
     }
 
@@ -114,7 +116,7 @@ class GameViewModel: ViewModel() {
      * Decreases the score by SCORE_DECREASE.
      */
     private fun decreaseScore() {
-        score -= SCORE_DECREASE
+        _score.value = _score.value?.minus(SCORE_DECREASE)
     }
 
     /*
@@ -138,8 +140,8 @@ class GameViewModel: ViewModel() {
      * Re-initializes the game data to restart the game.
      */
     fun reinitializeData() {
-        _currentWordCount = 0
-        score = 0
+        _currentWordCount.value = 0
+        _score.value = 0
         _incorrectWordCount = 0
         _currentWordTryCount = 0
         wordsList.clear()
